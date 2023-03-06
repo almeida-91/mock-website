@@ -6,3 +6,7 @@
 .topBar input {
     border-radius: 30px;
 }
+
+.topBar input:focus {
+    width: 50%;
+}
