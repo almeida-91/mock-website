@@ -1,0 +1,8 @@
+.topBar {
+    display: flex;
+    justify-content: space-between;
+}
+
+.topBar input {
+    border-radius: 30px;
+}
