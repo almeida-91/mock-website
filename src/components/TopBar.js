@@ -1,6 +1,6 @@
 import "./topbar.css";
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
-import app from "../firebase";
+import { app } from "../firebase";
 import { useState } from "react";
 
 const TopBar = (props) => {
