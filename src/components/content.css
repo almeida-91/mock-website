@@ -1,0 +1,10 @@
+.thread {
+    display: grid;
+    grid-template-columns: 1fr 6fr;
+    background-color: black;
+    color: white;
+    padding: 5px;
+    border-radius: 10px;
+    text-align: center;
+    align-items: center;
+}

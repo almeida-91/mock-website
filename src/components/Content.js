@@ -3,15 +3,20 @@ import { useEffect, useState } from "react";
 import { db } from "../firebase";
 import "./content.css";
 
-const Content = () => {
+const Content = (props) => {
+  console.log(props);
   const [currentThread, setCurrentThread] = useState();
   const [threadRender, setThreadRender] = useState();
 
   const getThreads = async () => {
-    const threadsRef = doc(db, "r", "test");
+    const threadsRef = doc(db, "r", props.renderContent);
     const threadSnap = await getDoc(threadsRef);
 
-    if (threadSnap.exists()) {
+    if (
+      threadSnap.exists() &&
+      threadSnap.data().threads &&
+      threadSnap.data().threads.length > 0
+    ) {
       console.log("Thread data:", threadSnap.data().threads);
       setCurrentThread(threadSnap.data().threads);
       const thread = threadSnap.data().threads.map((thread) => {
@@ -34,7 +39,7 @@ const Content = () => {
 
   useEffect(() => {
     getThreads();
-  }, []);
+  }, [props]);
 
   return (
     <div>
