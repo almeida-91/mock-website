@@ -8,3 +8,9 @@
     text-align: center;
     align-items: center;
 }
+
+.newThreadForm {
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+}
