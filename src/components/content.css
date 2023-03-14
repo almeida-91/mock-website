@@ -1,12 +1,15 @@
 .thread {
-    display: grid;
-    grid-template-columns: 1fr 6fr;
+    display: flex;
     background-color: black;
     color: white;
     padding: 5px;
     border-radius: 10px;
     text-align: center;
     align-items: center;
+}
+
+.threadContent {
+    flex-grow: 1;
 }
 
 .newThreadForm {

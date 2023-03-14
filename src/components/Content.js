@@ -16,15 +16,20 @@ const Content = (props) => {
 
     if (threadSnap.exists() && threadSnap.data().threads) {
       setSubReddit(props.renderContent);
-      const thread = threadSnap.data().threads.map((thread, index) => {
+      const threadArray = threadSnap.data().threads;
+      threadArray.sort(({ date: a }, { date: b }) =>
+        a > b ? -1 : a < b ? 1 : 0
+      );
+      const thread = threadArray.map((thread, index) => {
         return (
           <div key={index} className="thread">
+            <div>{index + 1}</div>
             <div className="scoreDiv">
               <button>Up</button>
               <span>{thread.score}</span>
               <button>Down</button>
             </div>
-            <div>
+            <div className="threadContent">
               <div>{thread.title}</div>
               <div>{thread.text}</div>
               <div>{moment(thread.date).fromNow()}</div>
