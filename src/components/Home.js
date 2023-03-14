@@ -4,15 +4,16 @@ import "./home.css";
 import Content from "./Content";
 import { useState } from "react";
 
-const Home = (props) => {
+const Home = () => {
   const [thread, setThread] = useState("test");
+  const [user, setUser] = useState(null);
 
   return (
     <div>
-      <TopBar />
+      <TopBar onUser={setUser} />
       <div className="content">
         <Sidebar onThread={setThread} />
-        <Content renderContent={thread} />
+        <Content renderContent={thread} user={user} />
       </div>
     </div>
   );

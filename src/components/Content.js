@@ -4,17 +4,23 @@ import { useEffect, useState } from "react";
 import { db } from "../firebase";
 import "./content.css";
 
+// TODOS:
+// Add upvote and downvote functions
+// Add thread viewing functionality
+// Add reply to thread functionality
+
 const Content = (props) => {
   const [threadRender, setThreadRender] = useState();
   const [toggleNewThreadForm, setToggleNewThreadForm] = useState(false);
   const [subreddit, setSubReddit] = useState();
 
+  console.log(props.user);
   const getThreads = async () => {
     setToggleNewThreadForm(false);
     const threadsRef = doc(db, "r", props.renderContent);
     const threadSnap = await getDoc(threadsRef);
 
-    if (threadSnap.exists() && threadSnap.data().threads) {
+    if (threadSnap.exists() && threadSnap.data().threads.length > 0) {
       setSubReddit(props.renderContent);
       const threadArray = threadSnap.data().threads;
       threadArray.sort(({ date: a }, { date: b }) =>
@@ -30,9 +36,11 @@ const Content = (props) => {
               <button>Down</button>
             </div>
             <div className="threadContent">
-              <div>{thread.title}</div>
+              <h3>{thread.title}</h3>
               <div>{thread.text}</div>
-              <div>{moment(thread.date).fromNow()}</div>
+              <div className="dateAndAuthor">
+                {moment(thread.date).fromNow()} by {thread.author}
+              </div>
             </div>
           </div>
         );
@@ -49,7 +57,7 @@ const Content = (props) => {
     getThreads();
   }, [props]);
 
-  const newThreadForm = (
+  const newThreadForm = props.user ? (
     <div>
       <form
         onSubmit={createNewThread}
@@ -70,6 +78,11 @@ const Content = (props) => {
         </button>
       </form>
     </div>
+  ) : (
+    <div>
+      <div>You must login to create a new thread!</div>
+      <button onClick={() => setToggleNewThreadForm(false)}>Back</button>
+    </div>
   );
 
   async function createNewThread(e) {
@@ -84,6 +97,7 @@ const Content = (props) => {
       date: new Date().toJSON(),
       score: 0,
       replies: [],
+      author: props.user.user.displayName,
     };
 
     await updateDoc(threadsRef, {

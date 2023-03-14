@@ -6,10 +6,16 @@
     border-radius: 10px;
     text-align: center;
     align-items: center;
+    margin: 10px;
 }
 
 .threadContent {
     flex-grow: 1;
+    text-align: left;
+    margin-left: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
 }
 
 .newThreadForm {
