@@ -5,13 +5,9 @@ import { db } from "../firebase";
 import "./content.css";
 
 const Content = (props) => {
-  console.log(props);
-  const [currentThread, setCurrentThread] = useState();
   const [threadRender, setThreadRender] = useState();
   const [toggleNewThreadForm, setToggleNewThreadForm] = useState(false);
   const [subreddit, setSubReddit] = useState();
-  const [newThreadTitle, setNewThreadTitle] = useState();
-  const [newThreadDescription, setNewThreadDescription] = useState();
 
   const getThreads = async () => {
     setToggleNewThreadForm(false);
@@ -19,11 +15,15 @@ const Content = (props) => {
     const threadSnap = await getDoc(threadsRef);
 
     if (threadSnap.exists() && threadSnap.data().threads) {
-      setCurrentThread(threadSnap.data().threads);
+      setSubReddit(props.renderContent);
       const thread = threadSnap.data().threads.map((thread, index) => {
         return (
           <div key={index} className="thread">
-            <div>{thread.score}</div>
+            <div className="scoreDiv">
+              <button>Up</button>
+              <span>{thread.score}</span>
+              <button>Down</button>
+            </div>
             <div>
               <div>{thread.title}</div>
               <div>{thread.text}</div>
@@ -46,15 +46,15 @@ const Content = (props) => {
 
   const newThreadForm = (
     <div>
-      <form onSubmit={createNewThread} className="newThreadForm">
+      <form
+        onSubmit={createNewThread}
+        className="newThreadForm"
+        id="newThreadForm"
+      >
         <label htmlFor="title">Thread Title:</label>
-        <input type={"text"} onChange={handleTitleChange} name="title" />
+        <input type={"text"} name="title" />
         <label htmlFor="description">Description:</label>
-        <textarea
-          type={"textarea"}
-          onChange={handleDescriptionChange}
-          name="description"
-        />
+        <textarea type={"textarea"} name="description" />
         <button type="submit">Submit</button>
         <button
           onClick={() => {
@@ -67,25 +67,16 @@ const Content = (props) => {
     </div>
   );
 
-  function handleTitleChange(e) {
-    setNewThreadTitle(e.target.value);
-  }
-
-  function handleDescriptionChange(e) {
-    setNewThreadDescription(e.target.value);
-  }
-
   async function createNewThread(e) {
     e.preventDefault();
     setToggleNewThreadForm(false);
+    const newThreadForm = document.getElementById("newThreadForm");
     const threadsRef = doc(db, "r", props.renderContent);
 
-    let currentDate = new Date().toJSON();
-
     const newThread = {
-      title: newThreadTitle,
-      text: newThreadDescription,
-      date: currentDate,
+      title: newThreadForm.elements.title.value,
+      text: newThreadForm.elements.description.value,
+      date: new Date().toJSON(),
       score: 0,
       replies: [],
     };
@@ -93,6 +84,8 @@ const Content = (props) => {
     await updateDoc(threadsRef, {
       threads: arrayUnion(newThread),
     });
+
+    getThreads();
   }
 
   return (

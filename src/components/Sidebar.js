@@ -22,8 +22,8 @@ const Sidebar = ({ onThread }) => {
   let topicList;
 
   if (topics) {
-    topicList = topics.map((topic) => (
-      <button onClick={() => onThread(topic)}>
+    topicList = topics.map((topic, index) => (
+      <button key={index} onClick={() => onThread(topic)}>
         {topic.charAt(0).toUpperCase() + topic.slice(1, topic.length)}
       </button>
     ));
