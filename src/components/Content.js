@@ -3,6 +3,9 @@ import moment from "moment";
 import { useEffect, useState } from "react";
 import { db } from "../firebase";
 import "./content.css";
+import { v4 as uuidv4 } from "uuid";
+import { updateCurrentUser } from "firebase/auth";
+import { Link } from "react-router-dom";
 
 // TODOS:
 // Add upvote and downvote functions
@@ -14,6 +17,7 @@ const Content = (props) => {
   const [toggleNewThreadForm, setToggleNewThreadForm] = useState(false);
 
   console.log(props.user);
+  console.log(props.renderContent);
   const getThreads = async () => {
     setToggleNewThreadForm(false);
     const threadsRef = doc(db, "r", props.renderContent);
@@ -29,15 +33,21 @@ const Content = (props) => {
           <div key={index} className="thread">
             <div>{index + 1}</div>
             <div className="scoreDiv">
-              <button>Up</button>
-              <span>{thread.score}</span>
-              <button>Down</button>
+              <button onClick={() => upvote(thread)}>Up</button>
+              <span>{thread.upvotedBy.length - thread.downvotedBy.length}</span>
+              <button onClick={() => downvote(thread)}>Down</button>
+            </div>
+            <div>
+              <i class="material-icons">forum</i>
             </div>
             <div className="threadContent">
               <h3>{thread.title}</h3>
               <div>{thread.text}</div>
               <div className="dateAndAuthor">
-                {moment(thread.date).fromNow()} by {thread.author}
+                submitted {moment(thread.date).fromNow()} by {thread.author} to
+                <Link to={`/r/${props.renderContent}`}>
+                  /r/{props.renderContent}
+                </Link>
               </div>
             </div>
           </div>
@@ -93,9 +103,11 @@ const Content = (props) => {
       title: newThreadForm.elements.title.value,
       text: newThreadForm.elements.description.value,
       date: new Date().toJSON(),
-      score: 0,
       replies: [],
       author: props.user.user.displayName,
+      id: uuidv4(),
+      upvotedBy: [props.user.user.displayName],
+      downvotedBy: [],
     };
 
     await updateDoc(threadsRef, {
@@ -103,6 +115,30 @@ const Content = (props) => {
     });
 
     getThreads();
+  }
+
+  async function upvote(thread) {
+    if (!props.user) {
+      alert("You must login to vote!");
+      return;
+    }
+
+    const threadsRef = doc(db, "r", props.renderContent);
+    updateDoc(threadsRef);
+
+    if (thread.upvotedBy.includes(props.user.user.displayName)) {
+    }
+  }
+
+  async function downvote(thread) {
+    if (!props.user) {
+      alert("You must login to vote!");
+      return;
+    }
+
+    const threadsRef = doc(db, "r", props.renderContent);
+    if (thread.upvotedBy.includes(props.user.user.displayName)) {
+    }
   }
 
   return (
