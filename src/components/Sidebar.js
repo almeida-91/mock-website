@@ -2,6 +2,7 @@ import { db } from "../firebase";
 import { collection, getDocs } from "firebase/firestore";
 import "./sidebar.css";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 const Sidebar = ({ onThread }) => {
   const [topics, setTopics] = useState();
@@ -23,9 +24,9 @@ const Sidebar = ({ onThread }) => {
 
   if (topics) {
     topicList = topics.map((topic, index) => (
-      <button key={index} onClick={() => onThread(topic)}>
+      <Link to={`/r/${topic}`} key={index}>
         {topic.charAt(0).toUpperCase() + topic.slice(1, topic.length)}
-      </button>
+      </Link>
     ));
   }
 

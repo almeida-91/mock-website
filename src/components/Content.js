@@ -12,7 +12,6 @@ import "./content.css";
 const Content = (props) => {
   const [threadRender, setThreadRender] = useState();
   const [toggleNewThreadForm, setToggleNewThreadForm] = useState(false);
-  const [subreddit, setSubReddit] = useState();
 
   console.log(props.user);
   const getThreads = async () => {
@@ -21,7 +20,6 @@ const Content = (props) => {
     const threadSnap = await getDoc(threadsRef);
 
     if (threadSnap.exists() && threadSnap.data().threads.length > 0) {
-      setSubReddit(props.renderContent);
       const threadArray = threadSnap.data().threads;
       threadArray.sort(({ date: a }, { date: b }) =>
         a > b ? -1 : a < b ? 1 : 0
